@@ -29,7 +29,11 @@ class NicknameGenerator:
 
     def syllable_count(self, phones):
         syllables = 0
-        pass
+        
+    def last_syllable(self, phones):
+        syllable = []
+        for phone in reversed(phones):
+        
 
     def gen_nickname(self, name):
         pronunciation = self.name_dict[name]
