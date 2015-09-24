@@ -1,4 +1,6 @@
+import json
 import nltk
+import os
 import random
 from collections import defaultdict
 
@@ -21,10 +23,17 @@ class NicknameGenerator:
         return name_dict
             
     def create_nouns_dict(self):
-        nouns_dict = defaultdict(list)
-        for word, pron in self._pron_key:
-            if word.title() not in self._names and nltk.pos_tag([word])=='NN':
-                nouns_dict[word] = pron
+        if os.path.isfile('nouns.json'):
+            with open('nouns.json') as inf:
+                nouns_dict = json.load(inf)
+        else:
+            nouns_dict = defaultdict(list)
+            for word, pron in self._pron_key:
+                if (word.title() not in self._names
+                        and nltk.pos_tag([word])=='NN'):
+                    nouns_dict[word] = pron
+            with open('nouns.json') as outf:
+                json.dump(nouns_dict)  
         return nouns_dict
    
     # TO DO: pickle nouns; maybe sonority hierarchy? 
@@ -40,7 +49,7 @@ class NicknameGenerator:
     def last_syllable(self, phones):
         syllable = []
         for phone in reversed(phones):
-             
+            pass     
         return syllable
 
     def gen_nickname(self, name):
@@ -50,17 +59,3 @@ class NicknameGenerator:
         return self.syllable_count(pronunciation)   
          
 
-
-def main():
-    ng = NicknameGenerator()
-    
-    while True: 
-        name = raw_input("Enter a name: ")
-        nickname = ng.gen_nickname(name)
-        print("Your nickname is {}".format(nickname))
-        again = raw_input("Go again? ")
-        if again.lower() in ['no','n']:
-            break 
-
-if __name__ == "__main__":
-    main()
