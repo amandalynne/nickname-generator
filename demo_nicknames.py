@@ -9,7 +9,7 @@ def main():
         if nickname:
             print("Your nickname is {} the {}".format(name,nickname))
         else:
-            print("Sorry {}, I don't know how to pronounce your name".format(name))
+            print("Sorry {}, I can't think of a good nickname for you".format(name))
         again = raw_input("Go again? ")
         if again.lower() in ['no','n']:
             break 
