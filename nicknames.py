@@ -24,7 +24,7 @@ class NicknameGenerator:
             
     def create_nouns_dict(self):
         if os.path.isfile('nouns.json'):
-            with open('nouns.json') as inf:
+            with open('nouns.json','rb') as inf:
                 nouns_dict = json.load(inf)
         else:
             nouns_dict = defaultdict(list)
@@ -32,8 +32,8 @@ class NicknameGenerator:
                 if (word.title() not in self._names
                         and nltk.pos_tag([word])=='NN'):
                     nouns_dict[word] = pron
-            with open('nouns.json') as outf:
-                json.dump(nouns_dict)  
+            with open('nouns.json','wb') as outf:
+                json.dump(nouns_dict, outf)  
         return nouns_dict
    
     # TO DO: pickle nouns; maybe sonority hierarchy? 
