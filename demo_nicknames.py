@@ -4,9 +4,12 @@ def main():
     ng = NicknameGenerator()
     
     while True: 
-        name = raw_input("Enter a name: ")
+        name = raw_input("Enter a name: ").title()
         nickname = ng.gen_nickname(name)
-        print("Your nickname is {}".format(nickname))
+        if nickname:
+            print("Your nickname is {} the {}".format(name,nickname))
+        else:
+            print("Sorry {}, I don't know how to pronounce your name".format(name))
         again = raw_input("Go again? ")
         if again.lower() in ['no','n']:
             break 

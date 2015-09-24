@@ -34,8 +34,7 @@ class NicknameGenerator:
         else:
             nouns_dict = defaultdict(list)
             for word, pron in self._pron_key:
-                if (word.title() not in self._names
-                        and nltk.pos_tag([word])=='NN'):
+                if (word.title() not in self._names and nltk.pos_tag([word])[0][1]=='NN'):
                     nouns_dict[word] = pron
             with open('nouns.json','wb') as outf:
                 json.dump(nouns_dict, outf)  
@@ -45,47 +44,46 @@ class NicknameGenerator:
     def syllable_count(self, phones):
         syllables = 0
         for phone in phones:
-            print phone
             if phone[-1].isdigit():
                 syllables+=1
         return syllables
 
+
     def rhyme(self, phones):
         rhyme_part = []
         vowels = 0
-        for phone in reversed(phones):
-            rhyme_part.append(phone)
-            if vowels == 1:
-                break
-            if phone[0] in self._vowels:
-                vowels+=1
+        syllables = self.syllable_count(phones)
+        if syllables == 1: 
+            for phone in reversed(phones):
+                if vowels == 1:
+                    break
+                rhyme_part.append(phone)
+                if phone[0] in self._vowels:
+                    vowels+=1
+        else:
+            for phone in reversed(phones):
+                if vowels > 1: 
+                    break 
+                if phone[0] in self._vowels:
+                    vowels+=1
+                rhyme_part.append(phone)
         rhyme_part.reverse()
         return rhyme_part 
     
- 
-    def last_two_syllables(self, phones):
-        syllables = []
-        vowels = 0 
-        for phone in reversed(phones):
-            if vowels > 1: 
-                break 
-            if phone[0] in self._vowels:
-                vowels+=1
-            syllables.append(phone)
-        syllables.reverse()
-        return syllable
 
     def gen_nickname(self, name):
+        name = name.title()
         if name not in self._names:
-            return "Sorry, I don't know how to pronounce your name."
-        pronunciation = self.name_dict[name.title()]
+            return None 
+        pronunciation = self.name_dict[name]
         candidates = []
-        if self.syllable_count(pronunciation) == 1:
-            rhyme_part = self.rhyme(pronunciation)
-        else:
-            rhyme_part = self.last_two_syllables(pronunciation)
+        name_rhyme_part = self.rhyme(pronunciation)
         for word, pron in self.nouns_dict.items():
-            
-        return  
+            noun_rhyme_part = self.rhyme(pron)
+            if name_rhyme_part == noun_rhyme_part:
+                candidates.append(word)           
+        if not candidates:
+            return None
+        return random.choice(candidates).title()
          
 
